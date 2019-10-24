@@ -1,3 +1,11 @@
 // OmniaDataEngineeringOMS - Logs
+
+// ODET2DFPROD Runs
 ADFPipelineRun
 | where ResourceId contains "ODET2DFPROD" 
+
+// Any2Omnia JobName
+ADFPipelineRun
+| where ResourceId contains "ODET2DFPROD"
+| where PipelineName == "Corporate_Any2Omnia"
+| project parse_json(Parameters).JobName
