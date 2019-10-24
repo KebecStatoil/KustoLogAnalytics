@@ -9,3 +9,15 @@ ADFPipelineRun
 | where ResourceId contains "ODET2DFPROD"
 | where PipelineName == "Corporate_Any2Omnia"
 | project parse_json(Parameters).JobName
+
+// Distinct Pipeline Status
+ADFPipelineRun
+| where ResourceId contains "ODET2DFPROD"
+| distinct Status  
+
+// Failed Pipeline Runs with RunningTimeMinutes
+ADFPipelineRun
+| where ResourceId contains "ODET2DFPROD" and Status == "Failed" 
+| order by TimeGenerated
+| project TimeGenerated, PipelineName, OperationName, Start, End, datetime_diff('minute', End, Start)
+| project-rename RunningTimeMinutes=Column1
