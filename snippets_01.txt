@@ -1,5 +1,7 @@
 // OmniaDataEngineeringOMS - Logs
 
+// Pipelines runs
+
 // ODET2DFPROD Runs
 ADFPipelineRun
 | where ResourceId contains "ODET2DFPROD" 
