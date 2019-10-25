@@ -1,0 +1,4 @@
+// Safran activity runs
+ADFActivityRun
+| where ResourceId contains "ODET2DFPROD"
+| where PipelineName contains "safran"
