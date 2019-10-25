@@ -1,4 +1,19 @@
+// OmniaDataEngineeringOMS - Logs
+
+// Activity runs
+
 // Safran activity runs
 ADFActivityRun
 | where ResourceId contains "ODET2DFPROD"
 | where PipelineName contains "safran"
+
+// Distinct activity status
+ADFActivityRun 
+| where ResourceId contains "ODET2DFPROD"
+| distinct Status
+
+// Fail/Timed-out activity runs
+ADFActivityRun
+| where ResourceId contains "ODET2DFPROD"
+| where PipelineName contains "safran"
+| where Status !in ("Succeeded", "InProgress")
