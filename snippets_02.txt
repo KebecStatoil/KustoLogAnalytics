@@ -17,3 +17,12 @@ ADFActivityRun
 | where ResourceId contains "ODET2DFPROD"
 | where PipelineName contains "safran"
 | where Status !in ("Succeeded", "InProgress")
+
+// Fail/Timed-out activity runs with error message
+ADFActivityRun
+| where TimeGenerated > ago(7d) 
+| where Status !in ('Succeeded', 'InProgress') 
+| where ActivityName == 'CopyDLSToAzureSQL' 
+| where Input contains "report" 
+| sort by TimeGenerated desc 
+| project  TimeGenerated, ActivityName, OperationName, Input, Error
