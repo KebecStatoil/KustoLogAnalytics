@@ -26,3 +26,12 @@ ADFActivityRun
 | where Input contains "report" 
 | sort by TimeGenerated desc 
 | project  TimeGenerated, ActivityName, OperationName, Input, Error
+
+ADFActivityRun
+| where PipelineName == "Corporate_SafranProject_RunJob" 
+| where ActivityName == "CopyOracleToDLS"
+| where parse_json(parse_json(Input).source).oracleReaderQuery contains "SAFRANSA.ACTIVITIES"
+// where Status == "Succeeded"
+//| project "SAFRANSA.ACTIVITIES", ActivityName, Start, End, datetime_diff('minute', End, Start)
+//| project-rename SourceTable=Column1, RunningTimeMinutes=Column2
+| order by Start desc 
