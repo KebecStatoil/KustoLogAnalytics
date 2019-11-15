@@ -1,0 +1,9 @@
+ADFActivityRun
+| where ActivityName == "CopyOracleToDLS"
+| where parse_json(tostring(parse_json(Input).source)).oracleReaderQuery contains "SAFRANSA.ACTIVITIES"
+| where parse_json(tostring(parse_json(Input).source)).oracleReaderQuery !contains "SAFRANSA.ACTIVITIES_TEMP"
+| where OperationName == "CopyOracleToDLS - Succeeded" 
+| extend rowsCopied_ = tostring(parse_json(Output).rowsCopied) 
+| extend rowsRead_ = tostring(parse_json(Output).rowsRead) 
+| project OperationName, Start, End, rowsRead_, rowsCopied_ 
+| order by Start desc
