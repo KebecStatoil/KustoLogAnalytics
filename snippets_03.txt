@@ -1,0 +1,5 @@
+// Distinct Pipelines like "Safran"
+ADFPipelineRun
+| where PipelineName contains "safran"
+| distinct PipelineName
+
