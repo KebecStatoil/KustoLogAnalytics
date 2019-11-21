@@ -3,3 +3,32 @@ ADFPipelineRun
 | where PipelineName contains "safran"
 | distinct PipelineName
 
+// Running Time SafranActivitiesConcept
+ADFPipelineRun
+| where PipelineName == "SafranActivitiesConcept"
+| where Status == "Succeeded" 
+| extend RunningTimeMinutes = End - Start
+
+// Distinct Activities in SafranActivitiesConcept_RunJob
+ADFActivityRun
+| where PipelineName == "SafranActivitiesConcept_RunJob"
+| distinct ActivityName
+
+// distinct actvitity status
+ADFActivityRun
+| distinct Status
+
+// count of copy actvities
+ADFActivityRun
+| where PipelineName == "SafranActivitiesConcept_RunJob"
+| where ActivityName == "Copy Activities Parallel" 
+| where Status == "Succeeded"
+| summarize count() by PipelineRunId 
+
+// Succeeded Copy Activities
+ADFActivityRun
+| where PipelineName == "SafranActivitiesConcept_RunJob"
+| where ActivityName == "Copy Activities Parallel" 
+| where Status == "Succeeded"
+| summarize count() by PipelineRunId 
+
