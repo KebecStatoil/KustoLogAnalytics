@@ -1,0 +1,5 @@
+// Failed Activities in ODET2DFPROD per Pipeline
+ADFActivityRun
+| where ResourceId == "/SUBSCRIPTIONS/CB734DE0-83F0-453D-8ECA-9E52ECF9C897/RESOURCEGROUPS/ODET2RGPROD/PROVIDERS/MICROSOFT.DATAFACTORY/FACTORIES/ODET2DFPROD" 
+| where Status == "Failed"
+| summarize count() by PipelineName 
