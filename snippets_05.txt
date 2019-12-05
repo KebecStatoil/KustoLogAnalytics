@@ -4,3 +4,9 @@ search in (ADFPipelineRun) "safran"
 // safran mentions in activities and pipelines in the last day
 search in (ADFPipelineRun, ADFActivityRun) "safran"
 | where TimeGenerated > ago(1d)
+
+// pipeline runs per hour
+ADFPipelineRun
+| summarize RunCount=count() 
+         by PipelineName,
+            bin(TimeGenerated, 1h) 
