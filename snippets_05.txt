@@ -1,2 +1,6 @@
 // search across columns
 search in (ADFPipelineRun) "safran"
+
+// safran mentions in activities and pipelines in the last day
+search in (ADFPipelineRun, ADFActivityRun) "safran"
+| where TimeGenerated > ago(1d)
