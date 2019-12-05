@@ -1,0 +1,2 @@
+// search across columns
+search in (ADFPipelineRun) "safran"
