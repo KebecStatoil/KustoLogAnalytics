@@ -10,3 +10,10 @@ ADFPipelineRun
 | summarize RunCount=count() 
          by PipelineName,
             bin(TimeGenerated, 1h) 
+
+// failure counts by pipeline
+ADFPipelineRun
+| where Status == "Failed"
+| where TimeGenerated >= ago(7d)  
+| summarize Failures=count() by PipelineName
+| order by Failures desc
