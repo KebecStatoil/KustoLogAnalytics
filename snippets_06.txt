@@ -1,0 +1,11 @@
+// runs with activity failures and error message counts
+ADFPipelineRun
+| where ResourceId == "/SUBSCRIPTIONS/CB734DE0-83F0-453D-8ECA-9E52ECF9C897/RESOURCEGROUPS/ODET2RGPROD/PROVIDERS/MICROSOFT.DATAFACTORY/FACTORIES/ODET2DFPROD" 
+| join (
+    ADFActivityRun
+    | where Status == "Failed"
+) on $left.RunId == $right.PipelineRunId
+| project TimeGenerated, PipelineName, ActivityName, ErrorMessage 
+| summarize count() by bin(TimeGenerated, 1d), PipelineName, ActivityName, ErrorMessage 
+| order by count_ desc 
+| where PipelineName contains "safran" 
