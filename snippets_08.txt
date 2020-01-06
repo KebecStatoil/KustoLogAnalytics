@@ -9,9 +9,23 @@ let pipelines = ADFPipelineRun
 | project PipelineName, LastFailureUTC, FailedActivitiesCount, PipelineStatutuses, ActivityErrors
 | order by FailedActivitiesCount desc, PipelineName asc
 
+
 // by AkoleStatoil (Andriejus Koleinikovas)
 let pipelines = ADFPipelineRun
 | where ResourceId contains 'ODET2DFPROD'
+| project-rename PipelineStatus = Status; let activities = ADFActivityRun
+| project-rename ActivityStatus = Status; let adf_runs = pipelines
+| join kind= leftouter ( activities ) on $left.RunId == $right.PipelineRunId; adf_runs
+| where ActivityStatus !in ('Succeeded', 'InProgress') and PipelineStatus !in ('Succeeded', 'Queued', 'InProgress')
+| summarize FailedActivitiesCount = count(ActivityName), LastFailureUTC = max(TimeGenerated), ActivityErrors = make_list(Error) by PipelineName
+| project PipelineName, LastFailureUTC, FailedActivitiesCount, ActivityErrors
+| order by FailedActivitiesCount desc nulls first, PipelineName asc
+
+
+// by AkoleStatoil (Andriejus Koleinikovas)
+let pipelines = ADFPipelineRun
+| where ResourceId contains 'DATAPLATFORMDFV2PROD'
+| where PipelineName in ('Corporate_DISP', 'Corporate_DISP_DataCopy', 'Corporate_IWIT', 'Corporate_ProductionDataMart', 'Corporate_SafranProject', 'Corporate_SafranProject_CopyDataset', 'Corporate_SAP_BW_P04_TIMP', 'Corporate_SAP_BW_P04_TIMP_CopyData', 'Corporate_SAP_R3_OIL_P03_Notification', 'Corporate_STID_CopyLocations', 'Corporate_STID_CopySystems', 'Corporate_STID_HistoricIterateMonths', 'Corporate_STID_HistoricIterateYears', 'Corporate_STID_System', 'Corporate_STID_TAG', 'Corporate_STID_TAG_CopyDeleted', 'Corporate_STID_TAG_CopyDocs', 'Corporate_STID_TAG_CopyTags', 'Corporate_STID_TAG_UpdateDLS', 'Corporate_Synergi', 'Corporate_Synergi_DataCopy', 'Corporate_WellSpot_FatigueStatus', 'Corporate_WellSpot_FatigueStatus_DataCopy', 'Corporate_WellSpot_WellFacts', 'Corporate_WellSpot_WellFacts_CopyData')
 | project-rename PipelineStatus = Status; let activities = ADFActivityRun
 | project-rename ActivityStatus = Status; let adf_runs = pipelines
 | join kind= leftouter ( activities ) on $left.RunId == $right.PipelineRunId; adf_runs
