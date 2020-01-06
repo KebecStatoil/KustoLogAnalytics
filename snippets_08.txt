@@ -1,0 +1,21 @@
+// by AkoleStatoil (Andriejus Koleinikovas)
+let pipelines = ADFPipelineRun
+| where ResourceId contains 'OMNIADATAENGINEERINGPLDFPROD'
+| project-rename PipelineStatus = Status; let activities = ADFActivityRun
+| project-rename ActivityStatus = Status; let adf_runs = pipelines
+| join kind= leftouter ( activities ) on $left.RunId == $right.PipelineRunId; adf_runs
+| where ActivityStatus !in ('Succeeded', 'InProgress') and PipelineStatus !in ('Succeeded', 'Queued', 'InProgress')
+| summarize FailedActivitiesCount = count(ActivityName), LastFailureUTC = max(TimeGenerated), PipelineStatutuses = make_list(PipelineStatus), ActivityErrors = make_list(Error) by PipelineName
+| project PipelineName, LastFailureUTC, FailedActivitiesCount, PipelineStatutuses, ActivityErrors
+| order by FailedActivitiesCount desc, PipelineName asc
+
+// by AkoleStatoil (Andriejus Koleinikovas)
+let pipelines = ADFPipelineRun
+| where ResourceId contains 'ODET2DFPROD'
+| project-rename PipelineStatus = Status; let activities = ADFActivityRun
+| project-rename ActivityStatus = Status; let adf_runs = pipelines
+| join kind= leftouter ( activities ) on $left.RunId == $right.PipelineRunId; adf_runs
+| where ActivityStatus !in ('Succeeded', 'InProgress') and PipelineStatus !in ('Succeeded', 'Queued', 'InProgress')
+| summarize FailedActivitiesCount = count(ActivityName), LastFailureUTC = max(TimeGenerated), ActivityErrors = make_list(Error) by PipelineName
+| project PipelineName, LastFailureUTC, FailedActivitiesCount, ActivityErrors
+| order by FailedActivitiesCount desc nulls first, PipelineName asc
