@@ -1,5 +1,6 @@
 # Questions I'd like to answer
 
+* What is the failure (to success) ratio
 * What are the run times for the Activities table and how many records are moved?
 * How many activities are run in parallel at a time?
 * How long are the net_id parallel copies and how many records are moved?
